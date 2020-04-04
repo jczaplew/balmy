@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import './App.css';
 
 import Forecast from './Forecast';
 import CurrentConditions from './CurrentConditions';
 import HourlyGraphs from './HourlyGraphs';
 
-const precipRegex = new RegExp(/Chance of precipitation is (\d+)%./g);
+// const precipRegex = new RegExp(/Chance of precipitation is (\d+)%./g);
 
 function App() {
 

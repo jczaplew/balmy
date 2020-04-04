@@ -40,9 +40,9 @@ export default function HourlyGraphs() {
 
         hourly.probabilityOfPrecipitation.data = hourly.probabilityOfPrecipitation.values.map((d: any) => {
             return {
-            ...d,
-            x: moment(d.validTime.split('/')[0]).toDate(),
-            y: d.value,
+                ...d,
+                x: moment(d.validTime.split('/')[0]).toDate(),
+                y: d.value,
             }
         });
         hourly.probabilityOfPrecipitation['id'] = 'probabilityOfPrecipitation';
@@ -52,19 +52,29 @@ export default function HourlyGraphs() {
 
     useEffect(() => {
         fetchHourlyForecast();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!hourlyForecast) return null;
 
-    const height = '225px';
+    const height = '200px';
 
     return <div>
         <div style={{height}}>
             <WeatherLine
                 data={[hourlyForecast.temperature]}
-                areaBaselineValue={Math.min(...hourlyForecast.temperature.data.map((d: any) => d.value))}
+                areaBaselineValue={Math.min(...hourlyForecast.temperature.data.map((d: any) => d.value)) - 10}
+                yScale={{
+                    type: 'linear',
+                    min: Math.min(...hourlyForecast.temperature.data.map((d: any) => d.value)) - 10,
+                    max: Math.max(...hourlyForecast.temperature.data.map((d: any) => d.value)) + 10,
+                }}
                 yFormat={(value) => `${value}°F`}
-                axisLeft={{legend: 'Degrees F'}}
+                axisLeft={{
+                    legend: 'Degrees F',
+                    format: (value) => `${value}°`,
+                }}
+                colors={'#ff8833'}
             />
         </div>
 
@@ -72,9 +82,17 @@ export default function HourlyGraphs() {
             <WeatherLine
                 data={[hourlyForecast.skyCover]}
                 yFormat={(value) => `${value}%`}
-                yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
-                axisLeft={{legend: '% Cloud Cover'}}
-                colors={'#777777'}
+                yScale={{
+                    type: 'linear',
+                    min: 0,
+                    max: 100,
+                }}
+                axisLeft={{
+                    legend: 'Cloud cover',
+                    tickValues: [0, 25, 50, 75, 100],
+                    format: (value) => `${value}%`,
+                }}
+                colors={'#a3a3a3'}
             />
         </div>
 
@@ -82,7 +100,16 @@ export default function HourlyGraphs() {
             <WeatherLine
                 data={[hourlyForecast.probabilityOfPrecipitation]}
                 yFormat={(value) => `${value}%`}
-                axisLeft={{legend: 'Chance of Precip',}}
+                yScale={{
+                    type: 'linear',
+                    min: 0,
+                    max: 100,
+                }}
+                axisLeft={{
+                    legend: 'Chance of Precip',
+                    tickValues: [0, 25, 50, 75, 100],
+                    format: (value) => `${value}%`,
+                }}
                 colors={'#15aadc'}
             />
         </div>
@@ -91,6 +118,11 @@ export default function HourlyGraphs() {
             <WeatherLine
                 data={[hourlyForecast.windSpeed]}
                 yFormat={(value) => `${value} mph`}
+                yScale={{
+                    type: 'linear',
+                    min: 0,
+                    max: Math.max(...hourlyForecast.windSpeed.data.map((d: any) => d.value)) + 2,
+                }}
                 axisLeft={{legend: 'Wind Speed (mph)'}}
                 colors={'#15aadc'}
                 enableArea={false}

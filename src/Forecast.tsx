@@ -29,6 +29,7 @@ export default function Forecast() {
               ) {
                 return p
               }
+              return false
             }).map((p: any) => p.temperature);
           }
           const minMaxTemps = !temps ? {} : {
@@ -57,6 +58,7 @@ export default function Forecast() {
 
     useEffect(() => {
         fetchForecast();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!forecast) return null;
@@ -72,7 +74,7 @@ export default function Forecast() {
                     <span style={{color: '#0053ae'}}>{day.minTemp}</span>°<span style={{fontWeight: 400}}>F</span>
                 </Typography>
                 }
-                <img src={day.icon} style={{width: '80px'}} alt=''/>
+                <img src={day.icon} style={{height: '80px'}} alt=''/>
                 {day.precip && <p>Precip: {day.precip}%</p>}
             </div>
             })}

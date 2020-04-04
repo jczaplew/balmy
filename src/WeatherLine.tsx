@@ -1,5 +1,7 @@
 import React from 'react';
 import {ResponsiveLine, LineSvgProps} from '@nivo/line';
+import {Typography} from '@material-ui/core';
+import moment from 'moment';
 
 interface WeatherLine extends LineSvgProps {
     areaBaselineValue?: number;
@@ -7,7 +9,7 @@ interface WeatherLine extends LineSvgProps {
 
 export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLine) {
     return <ResponsiveLine
-        margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+        margin={{ top: 20, right: 50, bottom: 50, left: 50 }}
         xScale={{
             type: 'time',
             format: 'native',
@@ -35,7 +37,7 @@ export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLin
             tickValues: 7,
             tickPadding: 5,
             tickRotation: 0,
-            legendOffset: -40,
+            legendOffset: -45,
             legendPosition: 'middle',
             ...axisLeft,
         }}
@@ -45,6 +47,21 @@ export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLin
         enableArea={true}
         areaOpacity={0.5}
         useMesh={true}
+        enableSlices='x'
+        sliceTooltip={(slice) => {
+            return <div style={{
+                paddingTop: '2px',
+                paddingBottom: '2px',
+                paddingLeft: '4px',
+                paddingRight: '4px',
+                backgroundColor: '#fff',
+                border: '1px solid #eee',
+            }}>
+                <Typography variant='subtitle2'>
+                {slice.slice.points[0].data.yFormatted} @ {moment(slice.slice.points[0].data.x).format('hA')}
+                </Typography>
+            </div>
+        }}
         {...props}
     />
 }

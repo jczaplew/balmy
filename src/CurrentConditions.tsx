@@ -27,13 +27,19 @@ export default function CurrentConditions() {
 
     useEffect(() => {
         fetchCurrentConditions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!currentConditions) return null;
 
-    return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-evenly'}}>
+    return <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        padding: '40px',
+    }}>
         <div>
-            <img src={currentConditions.icon} style={{width: '200px'}}/>
+            <img src={currentConditions.icon} style={{width: '175px'}} alt=''/>
         </div>
         <div>
             <Typography variant='h1'>
