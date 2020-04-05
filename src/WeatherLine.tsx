@@ -23,7 +23,7 @@ export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLin
         axisRight={null}
         axisBottom={{
             format: '%a %m/%e',
-            tickValues: 'every 1 day',
+            tickValues: 'every day',
             legendOffset: -12,
             orient: 'bottom',
             tickSize: 5,
