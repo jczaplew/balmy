@@ -15,7 +15,7 @@ export default function CurrentConditions() {
     const isMobile = useMediaQuery('(max-width: 500px)');
 
     async function fetchCurrentConditions() {
-        const response = await fetch('http://api.weather.gov/stations/KMSP/observations/latest')
+        const response = await fetch('https://api.weather.gov/stations/KMSP/observations/latest')
           .then(res => res.json())
 
         const parsedIcons = parseIcon(response.properties.icon);
