@@ -8,9 +8,13 @@ import {Typography} from '@material-ui/core';
 import {ForecastPeriod, MyForecastPeriod} from './types/ForecastPeriod';
 import {parseIcon} from './util';
 import icons from './icons';
+import ForecastCard from './ForecastCard';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 
 export default function Forecast() {
     const [forecast, setForecast] = useState<MyForecastPeriod[]>([]);
+    const isMobile = useMediaQuery('(max-width: 500px)');
 
     async function fetchForecast() {
         const response = await fetch('https://api.weather.gov/gridpoints/MPX/109,70/forecast')
@@ -64,30 +68,46 @@ export default function Forecast() {
     if (!forecast) return null;
 
     return <>
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            {forecast.map(day => {
-            return <div style={{display: 'inline-block', padding: '8px', fontSize: '12px'}} key={day.number}>
-                <Typography variant='h5'>{day.startDayOfTheWeek} {day.startDay}</Typography>
-                {day.minTemp &&
-                <Typography variant='body1'>
-                    <span style={{color: '#d5202a'}}>{day.maxTemp}</span>°{' | '}
-                    <span style={{color: '#0053ae'}}>{day.minTemp}</span>°<span style={{fontWeight: 400}}>F</span>
-                </Typography>
-                }
-                <img src={day.icon} style={{height: '80px'}} alt=''/>
-                {day.precip && <p>Precip: {day.precip}%</p>}
+        <div style={{overflowX: 'scroll'}}>
+            <div style={{width: '2000px', display: 'flex', paddingTop: '16px', paddingBottom: '16px'}}>
+                {forecast.map(day => <ForecastCard period={day}/>)}
             </div>
-            })}
+            {/* <div>
+                {forecast.map(day => {
+                return <div style={{display: 'inline-block', padding: '8px', fontSize: '12px'}} key={day.number}>
+                    <Typography variant='h5'>{day.startDayOfTheWeek} {day.startDay}</Typography>
+                    {day.minTemp &&
+                    <Typography variant='body1'>
+                        <span style={{color: '#d5202a'}}>{day.maxTemp}</span>°{' | '}
+                        <span style={{color: '#0053ae'}}>{day.minTemp}</span>°<span style={{fontWeight: 400}}>F</span>
+                    </Typography>
+                    }
+                    <img src={day.icon} style={{height: '80px'}} alt=''/>
+                    {day.precip && <p>Precip: {day.precip}%</p>}
+                </div>
+                })}
+            </div> */}
         </div>
         <Table>
             <TableBody>
             {forecast.map((day, i) => {
             return <TableRow key={i}>
-                <TableCell>{day.startDayOfTheWeek} {day.startDay}</TableCell>
-                <TableCell><span style={{color: '#d5202a'}}>{day.maxTemp}</span>°{' | '}
-                    <span style={{color: '#0053ae'}}>{day.minTemp}</span>°<span style={{fontWeight: 400}}>F</span></TableCell>
-                <TableCell>{day.windSpeed} {day.windDirection}</TableCell>
-                <TableCell style={{width: '50%', textAlign: 'left'}}>{day.detailedForecast}</TableCell>
+                <TableCell style={{padding: isMobile ? '10px' : '16px'}}>
+                    <Typography variant='body2'>{day.startDayOfTheWeek} {day.startDay}</Typography>
+                </TableCell>
+                <TableCell style={{padding: isMobile ? '10px' : '16px'}}>
+                    <Typography variant='body2'>
+                        <span style={{color: '#d5202a'}}>{day.maxTemp}</span>°{' | '}
+                        <span style={{color: '#0053ae'}}>{day.minTemp}</span>°
+                        <span style={{fontWeight: 400}}>F</span>
+                    </Typography>
+                </TableCell>
+                <TableCell style={{padding: isMobile ? '10px' : '16px'}}>
+                    <Typography variant='body2'>{day.windSpeed} {day.windDirection}</Typography>
+                </TableCell>
+                {!isMobile && <TableCell style={{width: '50%', textAlign: 'left', padding: isMobile ? '10px' : '16px'}}>
+                    <Typography variant='body1'>{day.detailedForecast}</Typography>
+                </TableCell>}
             </TableRow>
             })}
             </TableBody>

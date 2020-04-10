@@ -9,7 +9,7 @@ interface WeatherLine extends LineSvgProps {
 
 export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLine) {
     return <ResponsiveLine
-        margin={{ top: 20, right: 50, bottom: 50, left: 50 }}
+        margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
         xScale={{
             type: 'time',
             format: 'native',
