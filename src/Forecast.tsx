@@ -69,7 +69,7 @@ export default function Forecast() {
 
     return <>
         <div style={{overflowX: 'scroll'}}>
-            <div style={{width: '2000px', display: 'flex', paddingTop: '16px', paddingBottom: '16px'}}>
+            <div style={{width: '1750px', display: 'flex', paddingTop: '16px', paddingBottom: '16px'}}>
                 {forecast.map(day => <ForecastCard period={day}/>)}
             </div>
             {/* <div>

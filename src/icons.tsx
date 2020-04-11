@@ -8,6 +8,9 @@ import Rain from './icons/rain.svg';
 import SunnyRain from './icons/sunny_rain.svg';
 import Thunderstorm from './icons/thunderstorm.svg';
 import SunThunderstorm from './icons/sun_thunderstorm.svg';
+import Blizzard from './icons/blizzard.svg';
+import Windy from './icons/windy.svg';
+import CloudyWindy from './icons/cloudy_windy.svg';
 
 // https://thenounproject.com/anusha.narvekar/collection/weather/
 export default {
@@ -32,7 +35,8 @@ export default {
         "icon": Cloudy,
     },
     "wind_skc": {
-        "description": "Fair/clear and windy"
+        "description": "Fair/clear and windy",
+        "icon": Windy,
     },
     "wind_few": {
         "description": "A few clouds and windy",
@@ -43,10 +47,12 @@ export default {
         "icon": PartlyCloudyWindy,
     },
     "wind_bkn": {
-        "description": "Mostly cloudy and windy"
+        "description": "Mostly cloudy and windy",
+        "icon": CloudyWindy,
     },
     "wind_ovc": {
-        "description": "Overcast and windy"
+        "description": "Overcast and windy",
+        "icon": CloudyWindy,
     },
     "snow": {
         "description": "Snow",
@@ -122,7 +128,8 @@ export default {
         "description": "Cold"
     },
     "blizzard": {
-        "description": "Blizzard"
+        "description": "Blizzard",
+        "icon": Blizzard,
     },
     "fog": {
         "description": "Fog/mist"

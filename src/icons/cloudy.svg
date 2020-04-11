@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 125" enable-background="new 0 0 100 100" xml:space="preserve"><path fill-rule="evenodd" clip-rule="evenodd" fill="#000000" d="M69.5,68.449V68.5h-41c-5.523,0-10-4.478-10-10  c0-5.523,4.477-10,10-10c0.699,0,1.381,0.073,2.04,0.209C30.957,39.138,38.826,31.5,48.5,31.5c7.619,0,14.117,4.741,16.744,11.427  c1.043-0.269,2.129-0.427,3.256-0.427c7.18,0,13,5.82,13,13C81.5,62.342,76.211,67.938,69.5,68.449z"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 70 70" style="enable-background:new 0 0 70 70;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#E6E6E6;stroke:#A3A3A3;stroke-width:3;stroke-miterlimit:10;}
+</style>
+<path class="st0" d="M54.5,50.9L54.5,50.9l-41,0.1c-5.5,0-10-4.5-10-10c0-5.5,4.5-10,10-10c0.7,0,1.4,0.1,2,0.2
+	C16,21.6,23.8,14,33.5,14c7.6,0,14.1,4.7,16.7,11.4c1-0.3,2.1-0.4,3.3-0.4c7.2,0,13,5.8,13,13C66.5,44.8,61.2,50.4,54.5,50.9z"/>
+</svg>

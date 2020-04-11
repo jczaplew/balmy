@@ -22,7 +22,7 @@ export default function ForecastCard({period}: {period: MyForecastPeriod}) {
                     <img src={period.icon} style={{height: '45px'}} alt=''/>
                 </div>
 
-                <div style={{display: 'inline-block', textAlign: 'left', marginLeft: '16px', paddingTop: '8px', paddingBottom: '8px'}}>
+                <div style={{display: 'inline-block', textAlign: 'center', marginLeft: '16px', paddingTop: '8px', paddingBottom: '8px'}}>
                     <Typography variant='h6'>
                         <span style={{color: '#d5202a'}}>{period.maxTemp}</span>°{' | '}
                         <span style={{color: '#0053ae'}}>{period.minTemp}</span>°<span style={{fontWeight: 400}}>F</span>
