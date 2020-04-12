@@ -77,7 +77,7 @@ export default function HourlyGraphs() {
     }
 
     return <div>
-        <div style={{height}}>
+        <div style={{height, userSelect: 'none'}}>
             <WeatherLine
                 data={[hourlyForecast.temperature]}
                 areaBaselineValue={Math.min(...hourlyForecast.temperature.data.map((d: any) => d.value)) - 10}
@@ -96,7 +96,7 @@ export default function HourlyGraphs() {
             />
         </div>
 
-        <div style={{height}}>
+        <div style={{height, userSelect: 'none'}}>
             <WeatherLine
                 data={[hourlyForecast.skyCover]}
                 yFormat={(value) => `${value}%`}
@@ -115,7 +115,7 @@ export default function HourlyGraphs() {
             />
         </div>
 
-        <div style={{height}}>
+        <div style={{height, userSelect: 'none'}}>
             <WeatherLine
                 data={[hourlyForecast.probabilityOfPrecipitation]}
                 yFormat={(value) => `${value}%`}
@@ -134,7 +134,7 @@ export default function HourlyGraphs() {
             />
         </div>
 
-        <div style={{height}}>
+        <div style={{height, userSelect: 'none'}}>
             <WeatherLine
                 data={[hourlyForecast.windSpeed]}
                 yFormat={(value) => `${value} mph`}

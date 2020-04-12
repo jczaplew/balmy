@@ -2,12 +2,15 @@ import React from 'react';
 import {ResponsiveLine, LineSvgProps} from '@nivo/line';
 import {Typography} from '@material-ui/core';
 import moment from 'moment';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 interface WeatherLine extends LineSvgProps {
     areaBaselineValue?: number;
 }
 
 export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLine) {
+    const isMobile = useMediaQuery('(max-width: 500px)');
+
     return <ResponsiveLine
         margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
         xScale={{
@@ -28,7 +31,7 @@ export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLin
             orient: 'bottom',
             tickSize: 5,
             tickPadding: 5,
-            tickRotation: 0,
+            tickRotation: isMobile ? -45 : 0,
             ...axisBottom,
         }}
         axisLeft={{

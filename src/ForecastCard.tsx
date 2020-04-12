@@ -4,38 +4,73 @@ import CardContent from '@material-ui/core/CardContent';
 import {Typography} from '@material-ui/core';
 import {MyForecastPeriod} from './types/ForecastPeriod';
 import moment from 'moment';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import {makeStyles} from '@material-ui/styles';
 
+const useStyles = makeStyles({
+    cardRoot: {
+        margin: '8px',
+        width: '230px',
+        height: '175px',
+        display: 'inline-block'
+    },
+    cardRootMobile: {
+        margin: '4px',
+        padding: '4px',
+        width: '110px',
+        height: '100px',
+        display: 'inline-block'
+    },
+    cardContentMobile: {
+        padding: '4px',
+        '&:last-child': {
+            paddingBottom: 0,
+        }
+    }
+})
 export default function ForecastCard({period}: {period: MyForecastPeriod}) {
-    return <Card style={{margin: '8px', width: '230px', height: '175px', display: 'inline-block'}}>
-        <CardContent>
+    const isMobile = useMediaQuery('(max-width: 500px)');
+    const classes = useStyles();
+
+    const dayFormat = isMobile ? 'ddd D' : 'dddd MMM D'
+
+    return <Card classes={{
+        root: isMobile ? classes.cardRootMobile : classes.cardRoot,
+    }}>
+        <CardContent classes={{root: isMobile ? classes.cardContentMobile : ''}}>
             <Typography variant='subtitle1'>
-               {period.name} {moment(period.startTime).format('MMM D')}
+               {moment(period.startTime).format(dayFormat)}
             </Typography>
 
             <div style={{
-                display: 'flex',
+                display: isMobile ? 'block': 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
             }}>
 
-                <div style={{display: 'inline-block'}}>
-                    <img src={period.icon} style={{height: '45px'}} alt=''/>
+                <div style={{display: isMobile ? 'block' : 'inline-block'}}>
+                    <img src={period.icon} style={{height: isMobile ? '30px' : '45px'}} alt=''/>
                 </div>
 
-                <div style={{display: 'inline-block', textAlign: 'center', marginLeft: '16px', paddingTop: '8px', paddingBottom: '8px'}}>
+                <div style={{
+                    display: isMobile ? 'block' : 'inline-block',
+                    textAlign: 'center',
+                    marginLeft: isMobile ? 0 : '16px',
+                    paddingTop: isMobile ? '4px': '8px',
+                    paddingBottom: isMobile ? 0 : '8px'
+                }}>
                     <Typography variant='h6'>
                         <span style={{color: '#d5202a'}}>{period.maxTemp}</span>°{' | '}
                         <span style={{color: '#0053ae'}}>{period.minTemp}</span>°<span style={{fontWeight: 400}}>F</span>
                     </Typography>
 
-                    <Typography variant='body2'>
+                    {!isMobile && <Typography variant='body2'>
                         {period.windSpeed} {period.windDirection}
-                    </Typography>
+                    </Typography>}
                 </div>
-
             </div>
 
-            <Typography variant='body2'>{period.shortForecast}</Typography>
+            {!isMobile && <Typography variant='body2'>{period.shortForecast}</Typography>}
         </CardContent>
     </Card>
 }
