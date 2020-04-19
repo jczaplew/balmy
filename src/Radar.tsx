@@ -185,6 +185,7 @@ export default function Radar() {
             position: 'absolute',
             bottom: 0,
             left: 0,
+            // TODO: mobile remove right: 0
             right: 0,
             margin: '0 auto',
             marginBottom: '35px',
@@ -192,6 +193,7 @@ export default function Radar() {
             paddingTop: '16px',
             paddingRight: '32px',
             paddingLeft: '16px',
+            // TODO: mobile width 230
             width: '275px',
             backgroundColor: 'rgba(255,255,255,0.8)',
             borderRadius: '6px',
