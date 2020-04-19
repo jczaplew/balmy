@@ -1,13 +1,31 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import mapboxgl from 'mapbox-gl';
 import Slider from '@material-ui/core/Slider';
 import moment from 'moment';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import IconButton from '@material-ui/core/IconButton';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoiam9obmpjeiIsImEiOiJjazc5OW91M3UwMTEzM2ZxdTg0a3RlNHVkIn0.ebttXrA6i4iH0lxBLDGmjQ';
 
-
 export default function Radar() {
     const [map, setMap] = useState<mapboxgl.Map | undefined>();
+    const [startTime] = useState(moment().valueOf());
+    const [time, setTime] = useState(startTime);
+    const timeIntervals = useMemo(() => getTimeIntervals(startTime), []);
+    const [loopState, setLoopState] = useState<'loading'|'playing'|undefined>(undefined);
+    const [loop, setLoop] = useState<NodeJS.Timeout | undefined>(undefined);
+
+    async function getRadarLoop() {
+        if (!map) return;
+        setLoopState('loading');
+        // Get a radar url for each time interval
+        const radarPromises = timeIntervals.map(interval => fetch(getRadarUrl(map, interval.value)));
+
+        await Promise.all(radarPromises);
+        setLoopState('playing');
+    }
 
     useEffect(() => {
         const innerMap = new mapboxgl.Map({
@@ -16,7 +34,6 @@ export default function Radar() {
             minZoom: 4,
             zoom: 10,
             center: [-93.20523, 44.94776],
-            // center: [-99.12137, 41.33868],
             style: 'mapbox://styles/johnjcz/ck7t9f4aq2wuy1imokjil5qxm',
             hash: true
         });
@@ -41,21 +58,32 @@ export default function Radar() {
                 'id': 'radar',
                 'source': 'radar',
                 'type': 'raster',
-                'paint': { 'raster-opacity': 0.75 }
+                'paint': {
+                    'raster-opacity': 0.75,
+                    'raster-fade-duration': 0,
+                }
             },)
 
         })
 
         innerMap.on('movestart', () => {
-            innerMap.setPaintProperty('radar', 'raster-opacity', 0.1)
+            innerMap.setPaintProperty('radar', 'raster-opacity', 0)
+            if (loopState === 'playing') {
+                pauseLoop();
+            }
         })
 
-        innerMap.on('moveend', () => {
+        innerMap.on('moveend', async () => {
+            // Hack into the loading state
+            setLoopState('loading');
             const bounds = innerMap.getBounds();
             const radarSource = innerMap.getSource('radar') as mapboxgl.ImageSource;
+            const radarUrl = getRadarUrl(innerMap);
+
+            await fetch(radarUrl);
 
             radarSource.updateImage({
-                url: getRadarUrl(innerMap),
+                url: radarUrl,
                 coordinates: [
                     bounds.getNorthWest().toArray(),
                     bounds.getNorthEast().toArray(),
@@ -63,13 +91,62 @@ export default function Radar() {
                     bounds.getSouthWest().toArray(),
                 ]
             })
-            innerMap.setPaintProperty('radar', 'raster-opacity', 0.75)
+            // A delay helps prevent the illusion of the radar jumping around
+            setTimeout(() => {
+                innerMap.setPaintProperty('radar', 'raster-opacity', 0.75);
+                setLoopState(undefined);
+            }, 400);
 
-        })
+        });
 
     }, []);
 
-    function getRadarUrl(map: mapboxgl.Map, time?: number) {
+    useEffect(() => {
+        if (!map) return;
+
+        if (loopState === 'playing') {
+            let currentInterval = 0;
+
+            timeIntervals.forEach((interval, idx) => {
+                if (interval.value === time) {
+                    currentInterval = idx + 1;
+                }
+            });
+
+            if (currentInterval > timeIntervals.length - 1) {
+                currentInterval = 0;
+            }
+
+            setLoop(setInterval(() => {
+                (map.getSource('radar') as mapboxgl.ImageSource)
+                    .updateImage({ url: getRadarUrl(map, timeIntervals[currentInterval].value)});
+
+                setTime(timeIntervals[currentInterval].value);
+
+                if (currentInterval === timeIntervals.length - 1) {
+                    currentInterval = 0;
+                } else {
+                    currentInterval++;
+                }
+
+            }, 200))
+        }
+
+        if (loopState === undefined && loop) {
+            pauseLoop();
+        }
+
+    }, [loopState]);
+
+    function pauseLoop() {
+        if (!map || !loop) return;
+        clearInterval(loop);
+        setLoop(undefined);
+        (map.getSource('radar') as mapboxgl.ImageSource)
+                .updateImage({ url: getRadarUrl(map)});
+    }
+
+    function getRadarUrl(map: mapboxgl.Map, forceTime?: number) {
 
         const bounds = map.getBounds().toArray()
         const southWest = bounds[0]
@@ -80,7 +157,7 @@ export default function Radar() {
             transparent: 'true',
             format: 'png32',
             // The type defintions for URLSearchParams want all values to be strings
-            time: time ? `${time}` : `${new Date().getTime()}`,
+            time: forceTime ? `${forceTime}` : `${time}`,
             bbox: `${southWest.join(',')},${northEast.join(',')}`,
             bboxSR: '4326',
             imageSR: '4326',
@@ -93,53 +170,15 @@ export default function Radar() {
 
     }
 
-    function updateRadar(time: number) {
+    function updateRadar() {
         if (!map) return;
-        const radarUrl = getRadarUrl(map, time);
 
-        const radarSource = map.getSource('radar') as mapboxgl.ImageSource;
-
-        radarSource.updateImage({url: radarUrl})
+        (map.getSource('radar') as mapboxgl.ImageSource).updateImage({
+            url: getRadarUrl(map)
+        });
 
     }
 
-    const now = moment();
-
-    const marks = [
-        {
-            value: moment(now).subtract(4, 'hours').valueOf(),
-            label: moment(now).subtract(4, 'hours').format('H:mm'),
-        },
-        {
-            value: moment(now).subtract(3.5, 'hours').valueOf(),
-        },
-        {
-            value: moment(now).subtract(3, 'hours').valueOf(),
-            label: moment(now).subtract(3, 'hours').format('H:mm'),
-        },
-        {
-            value: moment(now).subtract(2.5, 'hours').valueOf(),
-        },
-        {
-            value: moment(now).subtract(2, 'hours').valueOf(),
-            label: moment(now).subtract(2, 'hours').format('H:mm'),
-        },
-        {
-            value: moment(now).subtract(1.5, 'hours').valueOf(),
-        },
-        {
-            value: moment(now).subtract(1, 'hours').valueOf(),
-            label: moment(now).subtract(1, 'hours').format('H:mm'),
-        },
-        {
-            value: moment(now).subtract(0.5, 'hours').valueOf(),
-        },
-        {
-            value: now.valueOf(),
-            label: now.format('H:mm'),
-        },
-    ]
-    console.log(marks)
     return <div>
         <div id='map' style={{position: 'absolute', top: 0, bottom: 0, width: '100%'}}></div>
         <div style={{
@@ -148,26 +187,101 @@ export default function Radar() {
             left: 0,
             right: 0,
             margin: '0 auto',
-            marginBottom: '16px',
+            marginBottom: '35px',
             paddingBottom: '8px',
             paddingTop: '16px',
             paddingRight: '32px',
-            paddingLeft: '32px',
-            width: '250px',
+            paddingLeft: '16px',
+            width: '275px',
             backgroundColor: 'rgba(255,255,255,0.8)',
             borderRadius: '6px',
         }}>
-            <Slider
-                marks={marks}
-                defaultValue={now.valueOf()}
-                valueLabelDisplay='off'
-                step={1800000}
-                min={moment(now).subtract(4, 'hours').valueOf()}
-                max={now.valueOf()}
-                onChangeCommitted={(event, value) => {
-                    updateRadar((value as number))
-                }}
-            />
+            {loopState === undefined && <IconButton
+                style={{marginRight: '8px', display: 'inline'}}
+                onClick={() => getRadarLoop()}
+            >
+                <PlayArrowIcon/>
+            </IconButton>}
+            {loopState === 'loading' && <CircularProgress size={23} style={{padding:'11px', marginRight: '10px'}}/>}
+            {loopState === 'playing' && <IconButton
+                style={{marginRight: '8px', display: 'inline'}}
+                onClick={() => setLoopState(undefined)}
+            >
+                <PauseIcon/>
+            </IconButton>}
+
+            <div style={{
+                width: '200px',
+                height: '51px',
+                position: 'absolute',
+                display: 'inline',
+                marginLeft: '18px',
+                marginRight: '18px',
+            }}>
+                <Slider
+                    marks={timeIntervals}
+                    defaultValue={startTime.valueOf()}
+                    valueLabelDisplay='off'
+                    step={900000}
+                    min={moment(startTime).subtract(4, 'hours').valueOf()}
+                    max={startTime}
+                    onChangeCommitted={(event, value) => {
+                        setTime((value as number));
+                        updateRadar();
+                    }}
+                    value={time}
+                />
+            </div>
+
         </div>
     </div>
+}
+
+function getTimeIntervals(startTime: number) {
+    return [
+        {
+            value: moment(startTime).subtract(4, 'hours').valueOf(),
+            label: moment(startTime).subtract(4, 'hours').format('H:mm'),
+        },
+        {
+            value: moment(startTime).subtract(3.5, 'hours').valueOf(),
+        },
+        {
+            value: moment(startTime).subtract(3.25, 'hours').valueOf(),
+        },
+        {
+            value: moment(startTime).subtract(3, 'hours').valueOf(),
+            label: moment(startTime).subtract(3, 'hours').format('H:mm'),
+        },
+        {
+            value: moment(startTime).subtract(2.5, 'hours').valueOf(),
+        },
+        {
+            value: moment(startTime).subtract(2.25, 'hours').valueOf(),
+        },
+        {
+            value: moment(startTime).subtract(2, 'hours').valueOf(),
+            label: moment(startTime).subtract(2, 'hours').format('H:mm'),
+        },
+        {
+            value: moment(startTime).subtract(1.5, 'hours').valueOf(),
+        },
+        {
+            value: moment(startTime).subtract(1.25, 'hours').valueOf(),
+        },
+        {
+            value: moment(startTime).subtract(1, 'hours').valueOf(),
+            label: moment(startTime).subtract(1, 'hours').format('H:mm'),
+        },
+        {
+            value: moment(startTime).subtract(0.5, 'hours').valueOf(),
+        },
+        {
+            value: moment(startTime).subtract(0.25, 'hours').valueOf(),
+        },
+        {
+            value: startTime,
+            label: moment(startTime).format('H:mm'),
+        },
+    ]
 }
