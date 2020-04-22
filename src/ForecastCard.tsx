@@ -1,8 +1,8 @@
 import React from 'react';
-import Card from '@material-ui/core/Card';
+import Card, {CardProps} from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import {Typography} from '@material-ui/core';
-import {MyForecastPeriod} from './types/ForecastPeriod';
+import {BalmyForecast} from './types/ForecastPeriod';
 import moment from 'moment';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {makeStyles} from '@material-ui/styles';
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
         }
     }
 })
-export default function ForecastCard({period}: {period: MyForecastPeriod}) {
+export default function ForecastCard({period, ...restProps}: CardProps & {period: BalmyForecast}) {
     const isMobile = useMediaQuery('(max-width: 500px)');
     const classes = useStyles();
 
@@ -36,7 +36,7 @@ export default function ForecastCard({period}: {period: MyForecastPeriod}) {
 
     return <Card classes={{
         root: isMobile ? classes.cardRootMobile : classes.cardRoot,
-    }}>
+    }} {...restProps}>
         <CardContent classes={{root: isMobile ? classes.cardContentMobile : ''}}>
             <Typography variant='subtitle1'>
                {moment(period.startTime).format(dayFormat)}

@@ -14,12 +14,9 @@ export type ForecastPeriod = {
     detailedForecast: string;
 }
 
-export interface MyForecastPeriod extends ForecastPeriod {
-    startDayOfTheWeek: string;
-    startDay: string;
-    endDayOfTheWeek: string;
-    endDay: string;
-    minTemp?: number;
-    maxTemp?: number;
-    precip?: string;
+export interface BalmyForecast extends ForecastPeriod {
+    night: BalmyForecast;
+    minTemp: number;
+    maxTemp: number;
+    precip: string;
 }
