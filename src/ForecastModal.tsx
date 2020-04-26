@@ -35,7 +35,7 @@ export default function ForecastModal({day, open, setOpen}: ForecastModalProps) 
         <DialogTitle>{moment(day.startTime).format('dddd MMM Do')}</DialogTitle>
         <DialogContent>
             <div style={{paddingBottom: '24px'}}>
-                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px'}}>
+                <div style={{display: 'flex', alignItems: 'center', marginBottom: '16px'}}>
                     <img src={day.icon} style={{height: '75px', marginRight: '16px'}} alt=''/>
                     <Typography variant='h6'>
                         <span style={{color: '#d5202a'}}>{day.temperature}</span>°F
@@ -47,8 +47,8 @@ export default function ForecastModal({day, open, setOpen}: ForecastModalProps) 
             </div>
 
             {day.night && <div>
-                <Typography variant='h6'>Overight</Typography>
-                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '16px', marginBottom: '16px'}}>
+                <Typography variant='h6'>Overnight</Typography>
+                <div style={{display: 'flex', alignItems: 'center', marginTop: '16px', marginBottom: '16px'}}>
                     <img src={day.night.icon} style={{height: '75px', marginRight: '16px'}} alt=''/>
                     <Typography variant='h6'>
                         <span style={{color: '#d5202a'}}>{day.night.temperature}</span>°F
