@@ -1,4 +1,6 @@
-Weather
+# balmy.us
+
+FOSS weather driven by NOAA APIs. Ad and tracker free weather conditions, forecasts, and radar powered by data that you already paid for.
 
 ### `yarn start`
 
