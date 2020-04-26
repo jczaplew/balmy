@@ -49,7 +49,7 @@ export default function CurrentConditions() {
             />
         </div>
         <div>
-            <Typography variant={isMobile ? 'h2': 'h1'}>
+            <Typography variant={isMobile ? 'h2': 'h1'} style={{fontFamily: 'Spartan'}}>
                 {CtoF(currentConditions.temperature.value)}°F
             </Typography>
             {currentConditions.feelsLike && <Typography variant='h5'>

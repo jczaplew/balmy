@@ -13,6 +13,11 @@ import Fab from '@material-ui/core/Fab';
 import WbSunnyIcon from '@material-ui/icons/WbSunny';
 import SatelliteIcon from '@material-ui/icons/Satellite';
 
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
 function App() {
   const fabStyle: React.CSSProperties = {
     position: 'fixed',
@@ -24,6 +29,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
+
         <Switch>
 
           <Route path='/radar'>
@@ -37,15 +43,30 @@ function App() {
           </Route>
 
           <Route path='/'>
+            <AppBar position="static">
+              <Toolbar>
+                <div style={{flexGrow: 1}}>
+                  <Link to='/' style={{textDecoration: 'none'}}>
+                    <Typography variant='h5' style={{color: '#fff', fontFamily: 'Spartan'}}>
+                      balmy.us
+                    </Typography>
+                  </Link>
+                </div>
+
+                <div>
+                  <Link to='/radar' style={{textDecoration: 'none', color: '#fff'}}>
+                    <Button startIcon={<SatelliteIcon/>} style={{color: '#fff'}}>
+                        Radar
+                    </Button>
+                  </Link>
+                </div>
+
+              </Toolbar>
+            </AppBar>
             <div className='App' style={{maxWidth: '1000px', margin: '0 auto', padding: '25px'}}>
               <CurrentConditions/>
               <Forecast/>
               <HourlyGraphs/>
-              <Link to='/radar'>
-                <Fab color='primary' aria-label="radar" style={fabStyle}>
-                  <SatelliteIcon />
-                </Fab>
-              </Link>
             </div>
           </Route>
 

@@ -38,7 +38,7 @@ export default function ForecastCard({period, ...restProps}: CardProps & {period
         root: isMobile ? classes.cardRootMobile : classes.cardRoot,
     }} {...restProps}>
         <CardContent classes={{root: isMobile ? classes.cardContentMobile : ''}}>
-            <Typography variant='subtitle1'>
+            <Typography variant='subtitle1' style={{fontFamily: 'Spartan'}}>
                {moment(period.startTime).format(dayFormat)}
             </Typography>
 

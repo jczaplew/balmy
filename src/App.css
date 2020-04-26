@@ -1,5 +1,11 @@
+@font-face {
+  font-family: 'Spartan';
+  src: local('Spartan'), url(./fonts/Spartan/Spartan-Regular.ttf) format('truetype');
+}
+
 .App {
   text-align: center;
+  font-family: 'Spartan';
 }
 
 ::-webkit-scrollbar {
