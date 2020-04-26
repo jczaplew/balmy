@@ -36,6 +36,7 @@ export default function ForecastPage() {
                 fetchData();
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return <div className='App' style={{maxWidth: '1000px', margin: '0 auto', padding: '25px'}}>
@@ -97,6 +98,7 @@ async function fetchForecast() {
         return {
           ...day,
           night: night.length ? night[0] : undefined,
+          shortForecast: day.shortForecast.split(' then ')[0],
 
         }
       }).filter((period: ForecastPeriod) => period.isDaytime);

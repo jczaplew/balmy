@@ -32,7 +32,7 @@ export default function ForecastCard({period, ...restProps}: CardProps & {period
     const isMobile = useMediaQuery('(max-width: 500px)');
     const classes = useStyles();
 
-    const dayFormat = isMobile ? 'ddd D' : 'dddd MMM D'
+    const dayFormat = isMobile ? 'ddd D' : 'dddd MMM D';
 
     return <Card classes={{
         root: isMobile ? classes.cardRootMobile : classes.cardRoot,
