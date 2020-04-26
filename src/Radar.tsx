@@ -187,40 +187,35 @@ export default function Radar() {
             position: 'absolute',
             bottom: 0,
             left: 0,
-            // TODO: mobile remove right: 0
             right: 0,
             margin: '0 auto',
             marginBottom: '35px',
             paddingBottom: '8px',
-            paddingTop: '16px',
-            paddingRight: '32px',
-            paddingLeft: '16px',
-            // TODO: mobile width 230
-            width: '275px',
+            width: '325px',
             backgroundColor: 'rgba(255,255,255,0.8)',
             borderRadius: '6px',
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
         }}>
-            {loopState === undefined && <IconButton
-                style={{marginRight: '8px', display: 'inline'}}
-                onClick={() => getRadarLoop()}
-            >
-                <PlayArrowIcon/>
-            </IconButton>}
-            {loopState === 'loading' && <CircularProgress size={23} style={{padding:'11px', marginRight: '10px'}}/>}
-            {loopState === 'playing' && <IconButton
-                style={{marginRight: '8px', display: 'inline'}}
-                onClick={() => setLoopState(undefined)}
-            >
-                <PauseIcon/>
-            </IconButton>}
+            <div >
+                {loopState === undefined && <IconButton
+                    onClick={() => getRadarLoop()}
+                >
+                    <PlayArrowIcon/>
+                </IconButton>}
+                {loopState === 'loading' && <CircularProgress size={23} style={{padding:'11px', marginRight: '10px'}}/>}
+                {loopState === 'playing' && <IconButton
+                    onClick={() => setLoopState(undefined)}
+                >
+                    <PauseIcon/>
+                </IconButton>}
+            </div>
 
             <div style={{
                 width: '200px',
-                height: '51px',
-                position: 'absolute',
-                display: 'inline',
-                marginLeft: '18px',
-                marginRight: '18px',
+                marginLeft: '24px',
+                marginRight: '24px',
             }}>
                 <Slider
                     marks={timeIntervals}
