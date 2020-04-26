@@ -13,19 +13,29 @@ export default function ForecastPage() {
         forecast: undefined,
         hourlyForecast: undefined,
     });
+    const [lastRefresh, setLastRefresh] = useState<moment.Moment | undefined>(undefined);
 
     async function fetchData() {
         const [currentConditions, forecast, hourlyForecast] = await Promise.all([
             await fetchCurrentConditions(),
             await fetchForecast(),
-            await fetchHourlyForecast()
+            await fetchHourlyForecast(),
         ]);
 
-       setData({currentConditions, forecast, hourlyForecast})
+       setData({currentConditions, forecast, hourlyForecast});
+       setLastRefresh(moment());
     }
 
     useEffect(() => {
         fetchData();
+
+        // If the user puts the page in the background and comes back >= 5 minutes later, refresh
+        document.addEventListener('visibilitychange', () => {
+            const sinceLastRefresh = moment.duration(moment().diff(lastRefresh));
+            if (sinceLastRefresh.asMinutes() >= 5) {
+                fetchData();
+            }
+        });
     }, []);
 
     return <div className='App' style={{maxWidth: '1000px', margin: '0 auto', padding: '25px'}}>
@@ -80,6 +90,7 @@ async function fetchForecast() {
           (period: ForecastPeriod) => {
             if (period.name === day.name + ' Night') return period;
             if (day.name === 'Today' && period.name === 'Tonight') return period;
+            return false;
           }
         );
 
