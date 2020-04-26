@@ -6,6 +6,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import IconButton from '@material-ui/core/IconButton';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoiam9obmpjeiIsImEiOiJjazc5OW91M3UwMTEzM2ZxdTg0a3RlNHVkIn0.ebttXrA6i4iH0lxBLDGmjQ';
 
@@ -13,9 +14,10 @@ export default function Radar() {
     const [map, setMap] = useState<mapboxgl.Map | undefined>();
     const [startTime] = useState(moment().valueOf());
     const [time, setTime] = useState(startTime);
-    const timeIntervals = useMemo(() => getTimeIntervals(startTime), []);
+    const timeIntervals = useMemo(() => getTimeIntervals(startTime), [startTime]);
     const [loopState, setLoopState] = useState<'loading'|'playing'|undefined>(undefined);
     const [loop, setLoop] = useState<NodeJS.Timeout | undefined>(undefined);
+    const isMobile = useMediaQuery('(max-width: 500px)');
 
     async function getRadarLoop() {
         if (!map) return;
@@ -98,7 +100,7 @@ export default function Radar() {
             }, 400);
 
         });
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -135,7 +137,7 @@ export default function Radar() {
         if (loopState === undefined && loop) {
             pauseLoop();
         }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loopState]);
 
     function pauseLoop() {
@@ -180,7 +182,7 @@ export default function Radar() {
     }
 
     return <div>
-        <div id='map' style={{position: 'absolute', top: 0, bottom: 0, width: '100%'}}></div>
+        <div id='map' style={{position: 'absolute', width: '100%', height: `calc(100% - ${isMobile ? '56' : '64'}px)`}}></div>
         <div style={{
             position: 'absolute',
             bottom: 0,

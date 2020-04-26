@@ -57,6 +57,9 @@ export default function HourlyGraphs() {
 
     useEffect(() => {
         fetchHourlyForecast();
+        window.addEventListener('focus', () => {
+            fetchHourlyForecast();
+        });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

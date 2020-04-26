@@ -63,6 +63,9 @@ export default function Forecast() {
 
     useEffect(() => {
         fetchForecast();
+        window.addEventListener('focus', () => {
+          fetchForecast();
+        });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -76,11 +79,11 @@ export default function Forecast() {
               paddingTop: '16px',
               paddingBottom: '16px'
             }}>
-                {forecast.map(day => {
+                {forecast.map((day, idx) => {
                   return <ForecastCard
+                    key={idx}
                     period={day}
                     onClick={() => {
-                      console.log(day)
                       setForecastModalOpen(true);
                       setActiveForcast(day);
                     }}/>

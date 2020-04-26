@@ -29,6 +29,9 @@ export default function CurrentConditions() {
 
     useEffect(() => {
         fetchCurrentConditions();
+        window.addEventListener('focus', () => {
+            fetchCurrentConditions();
+        });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
