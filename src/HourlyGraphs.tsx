@@ -1,74 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import moment from 'moment';
 import WeatherLine from './WeatherLine';
-import {CtoF} from './util';
 
-export default function HourlyGraphs() {
-    const [hourlyForecast, setHourlyForecast] = useState<any>(undefined);
-
-    async function fetchHourlyForecast() {
-        const hourly = await fetch('https://api.weather.gov/gridpoints/MPX/109,70')
-            .then(res => res.json())
-            .then(res => res.properties);
-
-        // Convert windspeed from knots to mph
-        hourly.windSpeed.data = hourly.windSpeed.values.map((d: any) => {
-            return {
-                ...d,
-                x: moment(d.validTime.split('/')[0]).toDate(),
-                y: Math.round(d.value * 1.15078),
-            }
-        });
-
-        // Convert temp from C to F
-        hourly.temperature.data = hourly.temperature.values.map((d: any) => {
-            return {
-                ...d,
-                x: moment(d.validTime.split('/')[0]).toDate(),
-                y: CtoF(d.value),
-                value: CtoF(d.value),
-            }
-        });
-
-        hourly.skyCover.data = hourly.skyCover.values.map((d: any) => {
-            return {
-                ...d,
-                x: moment(d.validTime.split('/')[0]).toDate(),
-                y: d.value,
-            }
-        });
-
-        hourly.probabilityOfPrecipitation.data = hourly.probabilityOfPrecipitation.values.map((d: any) => {
-            return {
-                ...d,
-                x: moment(d.validTime.split('/')[0]).toDate(),
-                y: d.value,
-            }
-        });
-
-        // Nivo needs an id
-        hourly.windSpeed['id'] = 'windSpeed';
-        hourly.skyCover['id'] = 'skyCover';
-        hourly.temperature['id'] = 'temperature';
-        hourly.probabilityOfPrecipitation['id'] = 'probabilityOfPrecipitation';
-
-        setHourlyForecast(hourly);
-    }
-
-    useEffect(() => {
-        fetchHourlyForecast();
-        window.addEventListener('focus', () => {
-            fetchHourlyForecast();
-        });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    if (!hourlyForecast) return null;
+export default function HourlyGraphs({data}: {data: any | undefined}) {
+    if (!data) return null;
 
     const height = '200px';
 
 
-    const times = hourlyForecast.temperature.data.map((d: any) => moment(d.x))
+    const times = data.temperature.data.map((d: any) => moment(d.x))
     const minDay = moment.min(...times).startOf('day').add(1, 'day');
     const maxDay = moment.max(...times).startOf('day');
 
@@ -82,12 +22,12 @@ export default function HourlyGraphs() {
     return <div>
         <div style={{height, userSelect: 'none'}}>
             <WeatherLine
-                data={[hourlyForecast.temperature]}
-                areaBaselineValue={Math.min(...hourlyForecast.temperature.data.map((d: any) => d.value)) - 10}
+                data={[data.temperature]}
+                areaBaselineValue={Math.min(...data.temperature.data.map((d: any) => d.value)) - 10}
                 yScale={{
                     type: 'linear',
-                    min: Math.min(...hourlyForecast.temperature.data.map((d: any) => d.value)) - 10,
-                    max: Math.max(...hourlyForecast.temperature.data.map((d: any) => d.value)) + 10,
+                    min: Math.min(...data.temperature.data.map((d: any) => d.value)) - 10,
+                    max: Math.max(...data.temperature.data.map((d: any) => d.value)) + 10,
                 }}
                 yFormat={(value) => `${value}°F`}
                 axisLeft={{
@@ -101,7 +41,7 @@ export default function HourlyGraphs() {
 
         <div style={{height, userSelect: 'none'}}>
             <WeatherLine
-                data={[hourlyForecast.skyCover]}
+                data={[data.skyCover]}
                 yFormat={(value) => `${value}%`}
                 yScale={{
                     type: 'linear',
@@ -120,7 +60,7 @@ export default function HourlyGraphs() {
 
         <div style={{height, userSelect: 'none'}}>
             <WeatherLine
-                data={[hourlyForecast.probabilityOfPrecipitation]}
+                data={[data.probabilityOfPrecipitation]}
                 yFormat={(value) => `${value}%`}
                 yScale={{
                     type: 'linear',
@@ -139,12 +79,12 @@ export default function HourlyGraphs() {
 
         <div style={{height, userSelect: 'none'}}>
             <WeatherLine
-                data={[hourlyForecast.windSpeed]}
+                data={[data.windSpeed]}
                 yFormat={(value) => `${value} mph`}
                 yScale={{
                     type: 'linear',
                     min: 0,
-                    max: Math.max(...hourlyForecast.windSpeed.data.map((d: any) => d.value)) + 2,
+                    max: Math.max(...data.windSpeed.data.map((d: any) => d.value)) + 2,
                 }}
                 axisLeft={{legend: 'Wind Speed (mph)'}}
                 axisBottom={{tickValues: days}}
