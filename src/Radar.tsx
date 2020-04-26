@@ -191,6 +191,7 @@ export default function Radar() {
             margin: '0 auto',
             marginBottom: '35px',
             paddingBottom: '8px',
+            paddingTop: '8px',
             width: '325px',
             backgroundColor: 'rgba(255,255,255,0.8)',
             borderRadius: '6px',
