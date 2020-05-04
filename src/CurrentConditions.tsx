@@ -5,20 +5,35 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import NavigationIcon from '@material-ui/icons/Navigation';
-import {CtoF, metersToMiles, metersPerSecondToMph} from './util';
+import {CtoF, metersToMiles, metersToFeet, metersPerSecondToMph} from './util';
 import getCardinalDirection from './util/getCardinalDirection';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import moment from 'moment';
 
-export default function CurrentConditions({data}: {data: any | undefined}) {
+export default function CurrentConditions(
+    {data, stationInfo}: {data: any | undefined, stationInfo: any | undefined}
+) {
     const isMobile = useMediaQuery('(max-width: 500px)');
 
-    if (!data) return null;
+    if (!data || !stationInfo) return null;
+
+    let stationName = stationInfo.properties.name.split(',');
+    if (stationName[1]) {
+        stationName = stationName[1].trim();
+    } else {
+        stationName = stationInfo.properties.name;
+    }
 
     return <div>
+        <div style={{textAlign: 'left'}}>
+            <Typography variant='h5'>
+                {stationName}
+            </Typography>
+        </div>
     <div style={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-evenly',
+        justifyContent: isMobile ? 'space-evenly' : 'space-between',
         padding: isMobile ? 0 : '40px',
     }}>
         <div>
@@ -52,17 +67,51 @@ export default function CurrentConditions({data}: {data: any | undefined}) {
             </div>}
         </div>
 
-        {!isMobile && <CurrentDetails data={data} /> }
+        {!isMobile && <CurrentDetails data={data} stationInfo={stationInfo} /> }
     </div>
-        {isMobile && <CurrentDetails data={data} /> }
+        {isMobile && <CurrentDetails data={data} stationInfo={stationInfo} /> }
     </div>;
 }
 
-function CurrentDetails({data}: {data: any}) {
-    if (!data) return null
+function CurrentDetails({data, stationInfo}: {data: any, stationInfo: any}) {
+    if (!data) return null;
+
+    const distanceMi = metersToMiles(stationInfo.properties.distance);
+
     return <div>
         <Table size="small" >
             <TableBody>
+                <TableRow>
+                    <TableCell>
+                    <Typography variant='subtitle2'>Last updated</Typography>
+                    </TableCell>
+                    <TableCell>
+                    <Typography variant='body2'>{moment(data.timestamp).fromNow()}</Typography>
+                    </TableCell>
+                </TableRow>
+
+                <TableRow>
+                    <TableCell>
+                    <Typography variant='subtitle2'>Elevation</Typography>
+                    </TableCell>
+                    <TableCell>
+                    <Typography variant='body2'>
+                        {metersToFeet(stationInfo.properties.elevation.value)} ft
+                    </Typography>
+                    </TableCell>
+                </TableRow>
+
+                <TableRow>
+                    <TableCell>
+                    <Typography variant='subtitle2'>Distance</Typography>
+                    </TableCell>
+                    <TableCell>
+                    <Typography variant='body2'>
+                        {distanceMi} mi {getCardinalDirection(stationInfo.properties.bearing)}
+                    </Typography>
+                    </TableCell>
+                </TableRow>
+
                 <TableRow className='mobile-wind'>
                     <TableCell>
                         <Typography variant='subtitle2'>Wind</Typography>

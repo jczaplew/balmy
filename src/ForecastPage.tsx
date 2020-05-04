@@ -3,12 +3,13 @@ import moment from 'moment';
 import Forecast from './Forecast';
 import CurrentConditions from './CurrentConditions';
 import HourlyGraphs from './HourlyGraphs';
-import {CtoF, parseIcon} from './util';
+import {CtoF, parseIcon, distanceM, bearing} from './util';
 import icons from './icons';
 import {ForecastPeriod} from './types/ForecastPeriod';
 
 export default function ForecastPage() {
     const [data, setData] = useState<any>({
+        stationInfo: undefined,
         currentConditions: undefined,
         forecast: undefined,
         hourlyForecast: undefined,
@@ -16,13 +17,28 @@ export default function ForecastPage() {
     const [lastRefresh, setLastRefresh] = useState<moment.Moment | undefined>(undefined);
 
     async function fetchData() {
-        const [currentConditions, forecast, hourlyForecast] = await Promise.all([
-            await fetchCurrentConditions(),
-            await fetchForecast(),
-            await fetchHourlyForecast(),
+        const LNG = -93.2054;
+        const LAT = 44.9475;
+        const {grid, station} = await fetchLocationInfo(LNG, LAT);
+
+        const [stationInfo, currentConditions, forecast, hourlyForecast] = await Promise.all([
+            await fetchStationInfo(station.id),
+            await fetchCurrentConditions(station.id + '/observations/latest'),
+            await fetchForecast(grid + '/forecast'),
+            await fetchHourlyForecast(grid),
         ]);
 
-       setData({currentConditions, forecast, hourlyForecast});
+        stationInfo.properties.distance = distanceM(
+          [LNG, LAT],
+          ((stationInfo.geometry.coordinates as any) as [number, number]),
+        );
+
+        stationInfo.properties.bearing = bearing(
+          [LNG, LAT],
+          ((stationInfo.geometry.coordinates as any) as [number, number]),
+        );
+
+       setData({stationInfo, currentConditions, forecast, hourlyForecast});
        setLastRefresh(moment());
     }
 
@@ -40,14 +56,34 @@ export default function ForecastPage() {
     }, []);
 
     return <div className='App' style={{maxWidth: '1000px', margin: '0 auto', padding: '25px'}}>
-        <CurrentConditions data={data.currentConditions}/>
+        <CurrentConditions data={data.currentConditions} stationInfo={data.stationInfo}/>
         <Forecast data={data.forecast} />
         <HourlyGraphs data={data.hourlyForecast}/>
     </div>
 }
 
+async function fetchLocationInfo(lng: number, lat: number) {
+  const pointInfo = await fetch(`https://api.weather.gov/points/${lat},${lng}`)
+    .then(res => res.json());
 
-async function fetchCurrentConditions() {
+  const station = await fetch(pointInfo.properties.observationStations)
+    .then(res => res.json())
+    .then(json => json.features[0]);
+
+  return {
+    grid: pointInfo.properties.forecastGridData,
+    station,
+  }
+}
+
+async function fetchStationInfo(url: string) {
+  const response = await fetch('https://api.weather.gov/stations/KMSP')
+    .then(res => res.json());
+
+    return response;
+}
+
+async function fetchCurrentConditions(url: string) {
     const response = await fetch('https://api.weather.gov/stations/KMSP/observations/latest')
       .then(res => res.json())
 
@@ -62,8 +98,8 @@ async function fetchCurrentConditions() {
     return response.properties;
 }
 
-async function fetchForecast() {
-    const response = await fetch('https://api.weather.gov/gridpoints/MPX/109,70/forecast')
+async function fetchForecast(url: string) {
+    const response = await fetch(url)
       .then(res => res.json());
 
     const parsed = response.properties.periods
@@ -107,8 +143,8 @@ async function fetchForecast() {
 }
 
 
-async function fetchHourlyForecast() {
-    const hourly = await fetch('https://api.weather.gov/gridpoints/MPX/109,70')
+async function fetchHourlyForecast(url: string) {
+    const hourly = await fetch(url)
         .then(res => res.json())
         .then(res => res.properties);
 
