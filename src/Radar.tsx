@@ -34,7 +34,7 @@ export default function Radar() {
             container: 'map',
             maxZoom: 12,
             minZoom: 4,
-            zoom: 10,
+            zoom: 7,
             center: [-93.20523, 44.94776],
             style: 'mapbox://styles/johnjcz/ck7t9f4aq2wuy1imokjil5qxm',
             hash: true
@@ -97,7 +97,7 @@ export default function Radar() {
             setTimeout(() => {
                 innerMap.setPaintProperty('radar', 'raster-opacity', 0.75);
                 setLoopState(undefined);
-            }, 400);
+            }, 500);
 
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,18 +120,20 @@ export default function Radar() {
             }
 
             setLoop(setInterval(() => {
-                (map.getSource('radar') as mapboxgl.ImageSource)
-                    .updateImage({ url: getRadarUrl(map, timeIntervals[currentInterval].value)});
+                if (currentInterval <= timeIntervals.length - 1) {
+                    (map.getSource('radar') as mapboxgl.ImageSource)
+                        .updateImage({ url: getRadarUrl(map, timeIntervals[currentInterval].value)});
 
-                setTime(timeIntervals[currentInterval].value);
+                    setTime(timeIntervals[currentInterval].value);
+                }
 
-                if (currentInterval === timeIntervals.length - 1) {
+                if (currentInterval === timeIntervals.length + 2) {
                     currentInterval = 0;
                 } else {
                     currentInterval++;
                 }
 
-            }, 200))
+            }, 250))
         }
 
         if (loopState === undefined && loop) {
