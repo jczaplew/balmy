@@ -227,7 +227,7 @@ export default function Radar() {
                     step={900000}
                     min={moment(startTime).subtract(4, 'hours').valueOf()}
                     max={startTime}
-                    onChangeCommitted={(event, value) => {
+                    onChange={(event, value) => {
                         setTime((value as number));
                         updateRadar();
                     }}
