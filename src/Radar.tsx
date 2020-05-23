@@ -10,7 +10,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoiam9obmpjeiIsImEiOiJjazc5OW91M3UwMTEzM2ZxdTg0a3RlNHVkIn0.ebttXrA6i4iH0lxBLDGmjQ';
 
-export default function Radar() {
+export default function Radar({lng, lat}: {lng: number; lat: number}) {
     const [map, setMap] = useState<mapboxgl.Map | undefined>();
     const [startTime] = useState(moment().valueOf());
     const [time, setTime] = useState(startTime);
@@ -32,27 +32,26 @@ export default function Radar() {
     useEffect(() => {
         const innerMap = new mapboxgl.Map({
             container: 'map',
-            maxZoom: 12,
+            maxZoom: 10,
             minZoom: 4,
-            zoom: 7,
-            center: [-93.20523, 44.94776],
+            zoom: 7.5,
+            center: [lng, lat],
             style: 'mapbox://styles/johnjcz/ck7t9f4aq2wuy1imokjil5qxm',
-            hash: true
         });
 
         setMap(innerMap);
 
         innerMap.on('load', () => {
-            const bounds = innerMap.getBounds()
+            const bounds = bufferBounds(innerMap.getBounds());
 
             innerMap.addSource('radar', {
                 'type': 'image',
                 'url': getRadarUrl(innerMap),
                 'coordinates': [
-                    bounds.getNorthWest().toArray(),
-                    bounds.getNorthEast().toArray(),
-                    bounds.getSouthEast().toArray(),
-                    bounds.getSouthWest().toArray(),
+                    [bounds[0], bounds[3]],
+                    [bounds[2], bounds[3]],
+                    [bounds[2], bounds[1]],
+                    [bounds[0], bounds[1]],
                 ]
             })
 
@@ -66,6 +65,39 @@ export default function Radar() {
                 }
             },)
 
+            innerMap.addSource('location', {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: [{
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [lng, lat],
+                        }
+                    }]
+                }
+            })
+
+            innerMap.addLayer({
+                id: 'location',
+                source: 'location',
+                type: 'circle',
+                paint: {
+                    'circle-radius': 6,
+                    'circle-color': '#4287f5',
+                    'circle-opacity': 0.85,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-stroke-width': 2,
+                    'circle-stroke-opacity': 0.85,
+                }
+            })
+
+            // For some reason a small gap will appear at the bottom without this
+            setTimeout(() => {
+                innerMap.resize();
+            }, 50);
         })
 
         innerMap.on('movestart', () => {
@@ -78,7 +110,8 @@ export default function Radar() {
         innerMap.on('moveend', async () => {
             // Hack into the loading state
             setLoopState('loading');
-            const bounds = innerMap.getBounds();
+            const bounds = bufferBounds(innerMap.getBounds());
+
             const radarSource = innerMap.getSource('radar') as mapboxgl.ImageSource;
             const radarUrl = getRadarUrl(innerMap);
 
@@ -87,10 +120,10 @@ export default function Radar() {
             radarSource.updateImage({
                 url: radarUrl,
                 coordinates: [
-                    bounds.getNorthWest().toArray(),
-                    bounds.getNorthEast().toArray(),
-                    bounds.getSouthEast().toArray(),
-                    bounds.getSouthWest().toArray(),
+                    [bounds[0], bounds[3]],
+                    [bounds[2], bounds[3]],
+                    [bounds[2], bounds[1]],
+                    [bounds[0], bounds[1]],
                 ]
             })
             // A delay helps prevent the illusion of the radar jumping around
@@ -151,10 +184,10 @@ export default function Radar() {
     }
 
     function getRadarUrl(map: mapboxgl.Map, forceTime?: number) {
+        const bounds = bufferBounds(map.getBounds());
 
-        const bounds = map.getBounds().toArray()
-        const southWest = bounds[0]
-        const northEast = bounds[1]
+        const southWest = [bounds[0], bounds[1]];
+        const northEast = [bounds[2], bounds[3]];
 
         const params = {
             dpi: '96',
@@ -285,5 +318,16 @@ function getTimeIntervals(startTime: number) {
             value: startTime,
             label: moment(startTime).format('H:mm'),
         },
+    ]
+}
+
+function bufferBounds(bounds: mapboxgl.LngLatBounds) {
+    const [sw, ne] = bounds.toArray();
+
+    return [
+        sw[0] - 0.05,
+        sw[1] - 0.05,
+        ne[0] + 0.05,
+        ne[1] + 0.05,
     ]
 }

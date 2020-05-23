@@ -8,6 +8,8 @@ import {ThemeProvider} from '@material-ui/core/styles';
 import theme from './theme';
 
 function App() {
+  const LNG = -93.2054;
+  const LAT = 44.9475;
 
   return (
     <ThemeProvider theme={theme}>
@@ -16,7 +18,7 @@ function App() {
         <Switch>
 
           <Route path='/radar'>
-            <Radar />
+            <Radar lng={LNG} lat={LAT} />
           </Route>
 
           <Route path='/'>
