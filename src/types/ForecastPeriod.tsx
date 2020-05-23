@@ -19,4 +19,11 @@ export interface BalmyForecast extends ForecastPeriod {
     minTemp: number;
     maxTemp: number;
     precip: string;
+    hourlyClouds?: any;
+    hourlyDewpoint?: any;
+    hourlyFeelsLike?: any;
+    hourlyPrecip?: any;
+    hourlyTemp?: any;
+    hourlyWind?: any;
+    hourlyWindGust: any[];
 }

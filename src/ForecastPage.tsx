@@ -21,7 +21,7 @@ export default function ForecastPage() {
         const LAT = 44.9475;
         const {grid, station} = await fetchLocationInfo(LNG, LAT);
 
-        const [stationInfo, currentConditions, forecast, hourlyForecast] = await Promise.all([
+        let [stationInfo, currentConditions, forecast, hourlyForecast] = await Promise.all([
             await fetchStationInfo(station.id),
             await fetchCurrentConditions(station.id + '/observations/latest'),
             await fetchForecast(grid + '/forecast'),
@@ -37,6 +37,38 @@ export default function ForecastPage() {
           [LNG, LAT],
           ((stationInfo.geometry.coordinates as any) as [number, number]),
         );
+
+        console.log(hourlyForecast)
+
+        forecast = forecast.map(day => {
+          const startTime = moment(day.startTime).startOf('day')
+          const endTime = moment(startTime).add(31, 'hours');
+
+          return {
+            ...day,
+            hourlyPrecip: hourlyForecast.probabilityOfPrecipitation.values.filter((d: any) =>
+                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+            ),
+            hourlyClouds: hourlyForecast.skyCover.values.filter((d: any) =>
+                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+            ),
+            hourlyTemp: hourlyForecast.temperature.values.filter((d: any) =>
+                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+            ),
+            hourlyFeelsLike: hourlyForecast.apparentTemperature.values.filter((d: any) =>
+                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+            ),
+            hourlyWind: hourlyForecast.windSpeed.values.filter((d: any) =>
+                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+            ),
+            hourlyWindGust: hourlyForecast.windGust.values.filter((d: any) =>
+                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+            ),
+            hourlyDewpoint: hourlyForecast.dewpoint.values.filter((d: any) =>
+                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+            ),
+          }
+        })
 
        setData({stationInfo, currentConditions, forecast, hourlyForecast});
        setLastRefresh(moment());
@@ -98,7 +130,7 @@ async function fetchCurrentConditions(url: string) {
     return response.properties;
 }
 
-async function fetchForecast(url: string) {
+async function fetchForecast(url: string): Promise<ForecastPeriod[]> {
     const response = await fetch(url)
       .then(res => res.json());
 

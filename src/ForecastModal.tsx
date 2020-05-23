@@ -9,6 +9,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import moment from 'moment';
+import TemperatureGraph from './TemperatureGraph';
+import PrecipGraph from './PrecipGraph';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & { children?: React.ReactElement<any, any> },
@@ -24,6 +26,7 @@ interface ForecastModalProps {
 }
 export default function ForecastModal({day, open, setOpen}: ForecastModalProps) {
     if (!day) return null;
+
     return (
     <Dialog
         open={open}
@@ -44,6 +47,9 @@ export default function ForecastModal({day, open, setOpen}: ForecastModalProps) 
                     {day.detailedForecast}
                 </Typography>
             </div>
+
+            <TemperatureGraph day={day} />
+            <PrecipGraph day={day} />
 
             {day.night && <div>
                 <Typography variant='h6'>Overnight</Typography>
