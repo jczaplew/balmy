@@ -34,7 +34,7 @@ export default function Radar({lng, lat}: {lng: number; lat: number}) {
             container: 'map',
             maxZoom: 10,
             minZoom: 4,
-            zoom: 7.5,
+            zoom: 7,
             center: [lng, lat],
             style: 'mapbox://styles/johnjcz/ck7t9f4aq2wuy1imokjil5qxm',
         });

@@ -48,9 +48,6 @@ export default function ForecastModal({day, open, setOpen}: ForecastModalProps) 
                 </Typography>
             </div>
 
-            <TemperatureGraph day={day} />
-            <PrecipGraph day={day} />
-
             {day.night && <div>
                 <Typography variant='h6'>Overnight</Typography>
                 <div style={{display: 'flex', alignItems: 'center', marginTop: '16px', marginBottom: '16px'}}>
@@ -63,6 +60,9 @@ export default function ForecastModal({day, open, setOpen}: ForecastModalProps) 
                     {day.night.detailedForecast}
                 </Typography>
             </div>}
+
+            <TemperatureGraph day={day} />
+            <PrecipGraph day={day} />
 
         </DialogContent>
         <DialogActions>
