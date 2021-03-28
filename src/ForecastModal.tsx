@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import TemperatureGraph from './TemperatureGraph';
 import PrecipGraph from './PrecipGraph';
 
@@ -34,7 +34,7 @@ export default function ForecastModal({day, open, setOpen}: ForecastModalProps) 
         keepMounted
         onClose={() => setOpen(false)}
     >
-        <DialogTitle>{moment(day.startTime).format('dddd MMM Do')}</DialogTitle>
+        <DialogTitle>{dayjs(day.startTime).format('dddd MMM Do')}</DialogTitle>
         <DialogContent>
             <div style={{paddingBottom: '24px'}}>
                 <div style={{display: 'flex', alignItems: 'center', marginBottom: '16px'}}>

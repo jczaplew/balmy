@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useMemo} from 'react';
 import mapboxgl from 'mapbox-gl';
 import Slider from '@material-ui/core/Slider';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -12,7 +12,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoiam9obmpjeiIsImEiOiJjazc5OW91M3UwMTEzM2ZxdTg0a
 
 export default function Radar({lng, lat}: {lng: number; lat: number}) {
     const [map, setMap] = useState<mapboxgl.Map | undefined>();
-    const [startTime] = useState(moment().valueOf());
+    const [startTime] = useState(dayjs().valueOf());
     const [time, setTime] = useState(startTime);
     const timeIntervals = useMemo(() => getTimeIntervals(startTime), [startTime]);
     const [loopState, setLoopState] = useState<'loading'|'playing'|undefined>(undefined);
@@ -258,7 +258,7 @@ export default function Radar({lng, lat}: {lng: number; lat: number}) {
                     defaultValue={startTime.valueOf()}
                     valueLabelDisplay='off'
                     step={900000}
-                    min={moment(startTime).subtract(4, 'hours').valueOf()}
+                    min={dayjs(startTime).subtract(4, 'hours').valueOf()}
                     max={startTime}
                     onChange={(event, value) => {
                         setTime((value as number));
@@ -275,48 +275,48 @@ export default function Radar({lng, lat}: {lng: number; lat: number}) {
 function getTimeIntervals(startTime: number) {
     return [
         {
-            value: moment(startTime).subtract(4, 'hours').valueOf(),
-            label: moment(startTime).subtract(4, 'hours').format('H:mm'),
+            value: dayjs(startTime).subtract(4, 'hours').valueOf(),
+            label: dayjs(startTime).subtract(4, 'hours').format('H:mm'),
         },
         {
-            value: moment(startTime).subtract(3.5, 'hours').valueOf(),
+            value: dayjs(startTime).subtract(3.5, 'hours').valueOf(),
         },
         {
-            value: moment(startTime).subtract(3.25, 'hours').valueOf(),
+            value: dayjs(startTime).subtract(3.25, 'hours').valueOf(),
         },
         {
-            value: moment(startTime).subtract(3, 'hours').valueOf(),
-            label: moment(startTime).subtract(3, 'hours').format('H:mm'),
+            value: dayjs(startTime).subtract(3, 'hours').valueOf(),
+            label: dayjs(startTime).subtract(3, 'hours').format('H:mm'),
         },
         {
-            value: moment(startTime).subtract(2.5, 'hours').valueOf(),
+            value: dayjs(startTime).subtract(2.5, 'hours').valueOf(),
         },
         {
-            value: moment(startTime).subtract(2.25, 'hours').valueOf(),
+            value: dayjs(startTime).subtract(2.25, 'hours').valueOf(),
         },
         {
-            value: moment(startTime).subtract(2, 'hours').valueOf(),
-            label: moment(startTime).subtract(2, 'hours').format('H:mm'),
+            value: dayjs(startTime).subtract(2, 'hours').valueOf(),
+            label: dayjs(startTime).subtract(2, 'hours').format('H:mm'),
         },
         {
-            value: moment(startTime).subtract(1.5, 'hours').valueOf(),
+            value: dayjs(startTime).subtract(1.5, 'hours').valueOf(),
         },
         {
-            value: moment(startTime).subtract(1.25, 'hours').valueOf(),
+            value: dayjs(startTime).subtract(1.25, 'hours').valueOf(),
         },
         {
-            value: moment(startTime).subtract(1, 'hours').valueOf(),
-            label: moment(startTime).subtract(1, 'hours').format('H:mm'),
+            value: dayjs(startTime).subtract(1, 'hours').valueOf(),
+            label: dayjs(startTime).subtract(1, 'hours').format('H:mm'),
         },
         {
-            value: moment(startTime).subtract(0.5, 'hours').valueOf(),
+            value: dayjs(startTime).subtract(0.5, 'hours').valueOf(),
         },
         {
-            value: moment(startTime).subtract(0.25, 'hours').valueOf(),
+            value: dayjs(startTime).subtract(0.25, 'hours').valueOf(),
         },
         {
             value: startTime,
-            label: moment(startTime).format('H:mm'),
+            label: dayjs(startTime).format('H:mm'),
         },
     ]
 }

@@ -1,6 +1,8 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs'
+import minMax from 'dayjs/plugin/minMax';
 import WeatherLine from './WeatherLine';
+dayjs.extend(minMax);
 
 export default function HourlyGraphs({data}: {data: any | undefined}) {
     if (!data) return null;
@@ -8,9 +10,9 @@ export default function HourlyGraphs({data}: {data: any | undefined}) {
     const height = '200px';
 
 
-    const times = data.temperature.data.map((d: any) => moment(d.x))
-    const minDay = moment.min(...times).startOf('day').add(1, 'day');
-    const maxDay = moment.max(...times).startOf('day');
+    const times = data.temperature.data.map((d: any) => dayjs(d.x))
+    const minDay = dayjs.min(...times).startOf('day').add(1, 'day');
+    const maxDay = dayjs.max(...times).startOf('day');
 
     const range = maxDay.diff(minDay, 'days');
     const days = [minDay.toDate()]

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import moment from 'moment';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -9,7 +8,7 @@ import {BalmyForecast} from './types/ForecastPeriod';
 import ForecastCard from './ForecastCard';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ForecastModal from './ForecastModal';
-
+import dayjs from 'dayjs';
 
 export default function Forecast({data}: {data: BalmyForecast[] | undefined}) {
     const isMobile = useMediaQuery('(max-width: 500px)');
@@ -42,7 +41,7 @@ export default function Forecast({data}: {data: BalmyForecast[] | undefined}) {
             {data.map((day, i) => {
             return <TableRow key={i}>
                  <TableCell style={{padding: isMobile ? '10px' : '16px'}}>
-                      <Typography variant='body2'>{moment(day.startTime).format('ddd')} {moment(day.startTime).format('M/D')}</Typography>
+                      <Typography variant='body2'>{dayjs(day.startTime).format('ddd')} {dayjs(day.startTime).format('M/D')}</Typography>
                   </TableCell>
                   <TableCell style={{padding: isMobile ? '10px' : '16px'}}>
                       <Typography variant='body2'>

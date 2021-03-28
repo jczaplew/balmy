@@ -8,7 +8,9 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 import {CtoF, metersToMiles, metersToFeet, metersPerSecondToMph, kphToMph} from './util';
 import getCardinalDirection from './util/getCardinalDirection';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 export default function CurrentConditions(
     {data, stationInfo}: {data: any | undefined, stationInfo: any | undefined}
@@ -86,7 +88,7 @@ function CurrentDetails({data, stationInfo}: {data: any, stationInfo: any}) {
                     <Typography variant='subtitle2'>Last updated</Typography>
                     </TableCell>
                     <TableCell>
-                    <Typography variant='body2'>{moment(data.timestamp).fromNow()}</Typography>
+                    <Typography variant='body2'>{dayjs(data.timestamp).fromNow()}</Typography>
                     </TableCell>
                 </TableRow>
 

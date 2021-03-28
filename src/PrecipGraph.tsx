@@ -1,16 +1,16 @@
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import Highcharts, {Options} from 'highcharts';
 import HighchartsReact from 'highcharts-react-official'
 import {BalmyForecast} from './types/ForecastPeriod';
 
 export default function PrecipGraph({day}: {day: BalmyForecast}) {
     const precip = day.hourlyPrecip.map((d: any) =>
-        [moment(d.validTime.split('/')[0]).valueOf(), d.value]
+        [dayjs(d.validTime.split('/')[0]).valueOf(), d.value]
     );
 
     const clouds = day.hourlyClouds.map((d: any) =>
-        [moment(d.validTime.split('/')[0]).valueOf(), d.value]
+        [dayjs(d.validTime.split('/')[0]).valueOf(), d.value]
     );
 
     const options: Options = {
@@ -38,11 +38,11 @@ export default function PrecipGraph({day}: {day: BalmyForecast}) {
             },
             plotLines: [{
                 color: '#aaaaaa',
-                value: moment().valueOf(),
+                value: dayjs().valueOf(),
                 width: 1,
                 zIndex: 2,
             }],
-            max: moment(clouds[0][0]).endOf('day').add(4, 'hours').valueOf(),
+            max: dayjs(clouds[0][0]).endOf('day').add(4, 'hours').valueOf(),
         },
         yAxis: {
             title: {
@@ -56,7 +56,7 @@ export default function PrecipGraph({day}: {day: BalmyForecast}) {
         tooltip: {
             shared: true,
             formatter: function() {
-                return `${this.y} @ ${moment(this.x).format('h A')}`
+                return `${this.y} @ ${dayjs(this.x).format('h A')}`
             }
         },
         credits: {

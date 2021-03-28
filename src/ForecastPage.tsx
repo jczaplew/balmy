@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import Forecast from './Forecast';
 import CurrentConditions from './CurrentConditions';
 import HourlyGraphs from './HourlyGraphs';
@@ -7,6 +8,7 @@ import {CtoF, parseIcon, distanceM, bearing} from './util';
 import icons from './icons';
 import {ForecastPeriod} from './types/ForecastPeriod';
 import CircularProgress from '@material-ui/core/CircularProgress';
+dayjs.extend(isBetween);
 
 export default function ForecastPage() {
     const [data, setData] = useState<any>({
@@ -15,7 +17,7 @@ export default function ForecastPage() {
         forecast: undefined,
         hourlyForecast: undefined,
     });
-    const [lastRefresh, setLastRefresh] = useState<moment.Moment | undefined>(undefined);
+    const [lastRefresh, setLastRefresh] = useState<dayjs.Dayjs | undefined>(undefined);
 
     async function fetchData() {
         const LNG = -93.2054;
@@ -42,37 +44,37 @@ export default function ForecastPage() {
         console.log(hourlyForecast)
 
         forecast = forecast.map(day => {
-          const startTime = moment(day.startTime).startOf('day')
-          const endTime = moment(startTime).add(31, 'hours');
+          const startTime = dayjs(day.startTime).startOf('day')
+          const endTime = dayjs(startTime).add(31, 'hours');
 
           return {
             ...day,
             hourlyPrecip: hourlyForecast.probabilityOfPrecipitation.values.filter((d: any) =>
-                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+                dayjs(d.validTime.split('/')[0]).isBetween(startTime, endTime)
             ),
             hourlyClouds: hourlyForecast.skyCover.values.filter((d: any) =>
-                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+                dayjs(d.validTime.split('/')[0]).isBetween(startTime, endTime)
             ),
             hourlyTemp: hourlyForecast.temperature.values.filter((d: any) =>
-                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+                dayjs(d.validTime.split('/')[0]).isBetween(startTime, endTime)
             ),
             hourlyFeelsLike: hourlyForecast.apparentTemperature.values.filter((d: any) =>
-                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+                dayjs(d.validTime.split('/')[0]).isBetween(startTime, endTime)
             ),
             hourlyWind: hourlyForecast.windSpeed.values.filter((d: any) =>
-                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+                dayjs(d.validTime.split('/')[0]).isBetween(startTime, endTime)
             ),
             hourlyWindGust: hourlyForecast.windGust.values.filter((d: any) =>
-                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+                dayjs(d.validTime.split('/')[0]).isBetween(startTime, endTime)
             ),
             hourlyDewpoint: hourlyForecast.dewpoint.values.filter((d: any) =>
-                moment(d.validTime.split('/')[0]).isBetween(startTime, endTime)
+                dayjs(d.validTime.split('/')[0]).isBetween(startTime, endTime)
             ),
           }
         })
 
        setData({stationInfo, currentConditions, forecast, hourlyForecast});
-       setLastRefresh(moment());
+       setLastRefresh(dayjs());
     }
 
     useEffect(() => {
@@ -80,8 +82,9 @@ export default function ForecastPage() {
 
         // If the user puts the page in the background and comes back >= 5 minutes later, refresh
         document.addEventListener('visibilitychange', () => {
-            const sinceLastRefresh = moment.duration(moment().diff(lastRefresh));
-            if (sinceLastRefresh.asMinutes() >= 5) {
+            const sinceLastRefresh = lastRefresh && dayjs().diff(lastRefresh) / 60000;
+
+            if (sinceLastRefresh && sinceLastRefresh >= 5) {
                 fetchData();
             }
         });
@@ -192,7 +195,7 @@ async function fetchHourlyForecast(url: string) {
     hourly.windSpeed.data = hourly.windSpeed.values.map((d: any) => {
         return {
             ...d,
-            x: moment(d.validTime.split('/')[0]).toDate(),
+            x: dayjs(d.validTime.split('/')[0]).toDate(),
             y: Math.round(d.value * 1.15078),
         }
     });
@@ -201,7 +204,7 @@ async function fetchHourlyForecast(url: string) {
     hourly.temperature.data = hourly.temperature.values.map((d: any) => {
         return {
             ...d,
-            x: moment(d.validTime.split('/')[0]).toDate(),
+            x: dayjs(d.validTime.split('/')[0]).toDate(),
             y: CtoF(d.value),
             value: CtoF(d.value),
         }
@@ -210,7 +213,7 @@ async function fetchHourlyForecast(url: string) {
     hourly.skyCover.data = hourly.skyCover.values.map((d: any) => {
         return {
             ...d,
-            x: moment(d.validTime.split('/')[0]).toDate(),
+            x: dayjs(d.validTime.split('/')[0]).toDate(),
             y: d.value,
         }
     });
@@ -218,7 +221,7 @@ async function fetchHourlyForecast(url: string) {
     hourly.probabilityOfPrecipitation.data = hourly.probabilityOfPrecipitation.values.map((d: any) => {
         return {
             ...d,
-            x: moment(d.validTime.split('/')[0]).toDate(),
+            x: dayjs(d.validTime.split('/')[0]).toDate(),
             y: d.value,
         }
     });

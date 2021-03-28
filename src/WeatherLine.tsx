@@ -1,7 +1,7 @@
 import React from 'react';
 import {ResponsiveLine, LineSvgProps} from '@nivo/line';
 import {Typography} from '@material-ui/core';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 interface WeatherLine extends LineSvgProps {
@@ -61,7 +61,7 @@ export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLin
                 border: '1px solid #eee',
             }}>
                 <Typography variant='subtitle2'>
-                {slice.slice.points[0].data.yFormatted} @ {moment(slice.slice.points[0].data.x).format('hA')}
+                {slice.slice.points[0].data.yFormatted} @ {dayjs(slice.slice.points[0].data.x).format('hA')}
                 </Typography>
             </div>
         }}

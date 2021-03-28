@@ -3,7 +3,7 @@ import Card, {CardProps} from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import {Typography} from '@material-ui/core';
 import {BalmyForecast} from './types/ForecastPeriod';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import {makeStyles} from '@material-ui/styles';
 
@@ -39,7 +39,7 @@ export default function ForecastCard({period, ...restProps}: CardProps & {period
     }} {...restProps}>
         <CardContent classes={{root: isMobile ? classes.cardContentMobile : ''}}>
             <Typography variant='subtitle1' style={{fontFamily: 'Spartan'}}>
-               {moment(period.startTime).format(dayFormat)}
+               {dayjs(period.startTime).format(dayFormat)}
             </Typography>
 
             <div style={{
