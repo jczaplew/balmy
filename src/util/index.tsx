@@ -7,6 +7,10 @@ export function metersPerSecondToMph(m: number) {
     return Math.round(m * 2.23694)
 }
 
+export function kphToMph(kph: number) {
+    return Math.round(kph * 0.62);
+}
+
 export function metersToMiles(m: number) {
     return Math.round(m * 0.0006213712);
 }

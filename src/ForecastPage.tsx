@@ -6,6 +6,7 @@ import HourlyGraphs from './HourlyGraphs';
 import {CtoF, parseIcon, distanceM, bearing} from './util';
 import icons from './icons';
 import {ForecastPeriod} from './types/ForecastPeriod';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function ForecastPage() {
     const [data, setData] = useState<any>({
@@ -88,9 +89,16 @@ export default function ForecastPage() {
     }, []);
 
     return <div className='App' style={{maxWidth: '1000px', margin: '0 auto', padding: '25px'}}>
+      {!data.stationInfo && <div
+        style={{position: 'absolute', width: 'calc(100% - 50px)', height: 'calc(100% - 124px)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+      >
+        <CircularProgress/>
+      </div>}
+      {data.stationInfo && <>
         <CurrentConditions data={data.currentConditions} stationInfo={data.stationInfo}/>
         <Forecast data={data.forecast} />
         <HourlyGraphs data={data.hourlyForecast}/>
+      </>}
     </div>
 }
 

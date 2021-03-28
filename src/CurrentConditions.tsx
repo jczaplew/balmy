@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import NavigationIcon from '@material-ui/icons/Navigation';
-import {CtoF, metersToMiles, metersToFeet, metersPerSecondToMph} from './util';
+import {CtoF, metersToMiles, metersToFeet, metersPerSecondToMph, kphToMph} from './util';
 import getCardinalDirection from './util/getCardinalDirection';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import moment from 'moment';
@@ -56,9 +56,9 @@ export default function CurrentConditions(
                         transform: `rotate(${data.windDirection.value - 180}deg)`,
                         marginRight: '8px',
                     }}/>
-                    {metersPerSecondToMph(data.windSpeed.value)}
+                    {kphToMph(data.windSpeed.value)}
                     {data.windGust.value ?
-                    ' | ' + metersPerSecondToMph(data.windGust.value) : ''}
+                    ' | ' + kphToMph(data.windGust.value) : ''}
                 </Typography>
                 <Typography variant='h5' style={{display: 'inline-block', marginLeft: '8px'}}>mph</Typography>
                 <Typography variant='h5'  style={{display: 'inline-block', marginLeft: '8px'}}>
