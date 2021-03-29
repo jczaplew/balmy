@@ -31,7 +31,7 @@ export default function HourlyGraphs({data}: {data: any | undefined}) {
                     min: Math.min(...data.temperature.data.map((d: any) => d.value)) - 10,
                     max: Math.max(...data.temperature.data.map((d: any) => d.value)) + 10,
                 }}
-                yFormat={(value) => `${value}°F`}
+                yFormat={(value: any) => `${value}°F`}
                 axisLeft={{
                     legend: 'Degrees F',
                     format: (value) => `${value}°`,
@@ -44,7 +44,7 @@ export default function HourlyGraphs({data}: {data: any | undefined}) {
         <div style={{height, userSelect: 'none'}}>
             <WeatherLine
                 data={[data.skyCover]}
-                yFormat={(value) => `${value}%`}
+                yFormat={(value: any) => `${value}%`}
                 yScale={{
                     type: 'linear',
                     min: 0,
@@ -63,7 +63,7 @@ export default function HourlyGraphs({data}: {data: any | undefined}) {
         <div style={{height, userSelect: 'none'}}>
             <WeatherLine
                 data={[data.probabilityOfPrecipitation]}
-                yFormat={(value) => `${value}%`}
+                yFormat={(value: any) => `${value}%`}
                 yScale={{
                     type: 'linear',
                     min: 0,
@@ -82,7 +82,7 @@ export default function HourlyGraphs({data}: {data: any | undefined}) {
         <div style={{height, userSelect: 'none'}}>
             <WeatherLine
                 data={[data.windSpeed]}
-                yFormat={(value) => `${value} mph`}
+                yFormat={(value: any) => `${value} mph`}
                 yScale={{
                     type: 'linear',
                     min: 0,

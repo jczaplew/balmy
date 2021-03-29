@@ -44,7 +44,7 @@ export default function Forecast({data}: {data: BalmyForecast[] | undefined}) {
                       <Typography variant='body2'>{dayjs(day.startTime).format('ddd')} {dayjs(day.startTime).format('M/D')}</Typography>
                   </TableCell>
                   <TableCell style={{padding: isMobile ? '10px' : '16px'}}>
-                      <Typography variant='body2'>
+                      <Typography variant='body2' style={{fontSize: '15px', fontWeight: 'bold'}}>
                           <span style={{color: '#d5202a'}}>{day.maxTemp}</span>°{' | '}
                           <span style={{color: '#0053ae'}}>{day.minTemp}</span>°
                           <span style={{fontWeight: 400}}>F</span>

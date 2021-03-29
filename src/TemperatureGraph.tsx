@@ -1,6 +1,6 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import dayjs from 'dayjs';
-import Highcharts, {Options, Chart} from 'highcharts';
+import Highcharts, {Options} from 'highcharts';
 import HighchartsReact from 'highcharts-react-official'
 import {CtoF} from './util';
 import {BalmyForecast} from './types/ForecastPeriod';
@@ -9,31 +9,6 @@ export default function TemperatureGraph({day}: {day: BalmyForecast}) {
     const temperatures = day.hourlyTemp.map((d: any) =>
         [dayjs(d.validTime.split('/')[0]).valueOf(), CtoF(d.value)]
     );
-
-    const callback = useMemo(() => {
-        return (chart: Chart) => {
-            console.log('addEvent')
-            Highcharts.addEvent(chart.container, 'mouseover', (event: PointerEvent) => {
-                if (!event) return;
-                for (let i = 0; i < Highcharts.charts.length; i++) {
-                    const chart = Highcharts.charts[i];
-                    if (!chart) continue;
-                    // Find coordinates within the chart
-                    const coord = chart.pointer.normalize(event);
-                    // Get the hovered point
-                    chart.series.forEach((s: any) => {
-                        const point: Highcharts.Point = s.searchPoint(coord, true);
-                        if (point) {
-                            point.select(true, true);
-                        } else {
-                            s.select(false);
-                        }
-                    })
-
-                }
-            })
-        }
-    }, []);
 
     const temperatureOptions: Options = {
         chart: {

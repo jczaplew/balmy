@@ -9,8 +9,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import dayjs from 'dayjs';
-import TemperatureGraph from './TemperatureGraph';
-import PrecipGraph from './PrecipGraph';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & { children?: React.ReactElement<any, any> },
@@ -61,8 +59,24 @@ export default function ForecastModal({day, open, setOpen}: ForecastModalProps) 
                 </Typography>
             </div>}
 
-            <TemperatureGraph day={day} />
-            <PrecipGraph day={day} />
+            {/* <div style={{height: '250px', userSelect: 'none'}}>
+                <WeatherLine
+                    data={[day.hourlyPrecip]}
+                    yFormat={(value: any) => `${value}%`}
+                    yScale={{
+                        type: 'linear',
+                        min: 0,
+                        max: 100,
+                    }}
+                    axisLeft={{
+                        legend: 'Chance of Precip',
+                        tickValues: [0, 25, 50, 75, 100],
+                        format: (value) => `${value}%`,
+                    }}
+                    // axisBottom={{tickValues: days}}
+                    colors={'#15aadc'}
+                />
+            </div> */}
 
         </DialogContent>
         <DialogActions>

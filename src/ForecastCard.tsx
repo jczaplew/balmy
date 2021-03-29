@@ -12,7 +12,8 @@ const useStyles = makeStyles({
         margin: '8px',
         width: '230px',
         height: '175px',
-        display: 'inline-block'
+        display: 'inline-block',
+        cursor: 'pointer',
     },
     cardRootMobile: {
         margin: '4px',

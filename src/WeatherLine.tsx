@@ -19,7 +19,7 @@ export default function WeatherLine({axisBottom, axisLeft, ...props}: WeatherLin
             precision: 'day',
         }}
         xFormat="time:%m/%d %H:00"
-        yFormat={(value) => `${value}°F`}
+        yFormat={(value: any) => `${value}°F`}
         yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
         curve='monotoneX'
         axisTop={null}

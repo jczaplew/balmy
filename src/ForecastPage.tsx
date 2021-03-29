@@ -41,8 +41,6 @@ export default function ForecastPage() {
           ((stationInfo.geometry.coordinates as any) as [number, number]),
         );
 
-        console.log(hourlyForecast)
-
         forecast = forecast.map(day => {
           const startTime = dayjs(day.startTime).startOf('day')
           const endTime = dayjs(startTime).add(31, 'hours');
